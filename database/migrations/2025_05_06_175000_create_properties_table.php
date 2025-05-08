@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('isForSale')->default(false);
             $table->enum('status', ['available', 'rented', 'sold'])->default('available');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
