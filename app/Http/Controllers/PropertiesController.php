@@ -6,8 +6,22 @@ use App\Models\Property;
 use Illuminate\Http\Request;
 class PropertiesController extends Controller
 {
-    public function index(){
-        return Property::all();
+    public function index(Request $request)
+    {
+        try{
+            $request->validate([
+            'status' => 'nullable|in:available,rented,sold'
+            ]);
+            $query = Property::query();
+
+            if ($request->has('status')) {
+                $query->where('status', $request->input('status'));
+            }
+
+            return $query->get();
+        }catch (\Exception $e){
+            return response()->json(['message' => $e->getMessage()],400);
+        }
     }
     public function store(Request $request){
         $fields = $request->validate([
