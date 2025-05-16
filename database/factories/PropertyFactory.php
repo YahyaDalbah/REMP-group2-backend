@@ -22,6 +22,7 @@ class PropertyFactory extends Factory
             'owner_id' => User::factory()->state(["type" => "seller"]),
             'title' => $this->faker->sentence(),
             'image' => $this->faker->randomElement(['home1.avif', 'home2.avif', 'home3.jpg', 'home4.jpg', 'home5.avif', 'home6.webp']),
+            'images' => [$this->faker->randomElement(['home1.avif', 'home2.avif', 'home3.jpg', 'home4.jpg', 'home5.avif', 'home6.webp']), $this->faker->randomElement(['home1.avif', 'home2.avif', 'home3.jpg', 'home4.jpg', 'home5.avif', 'home6.webp'])],
             'location' => $this->faker->address(),
             'description' => $this->faker->paragraph(3),
             'bedrooms' => rand(1, 5),

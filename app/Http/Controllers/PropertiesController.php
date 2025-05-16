@@ -32,6 +32,7 @@ class PropertiesController extends Controller
             'price' => 'required|numeric|min:0',
             'location' => 'required|string',
             'image' => 'required|string',
+            'images' => 'required|array',
             'owner_id' => 'required|exists:users,id',
             'isForRent' => 'required|boolean',
             'isForSale' => 'required|boolean',
