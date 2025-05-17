@@ -17,6 +17,9 @@ class PropertiesController extends Controller
             if ($request->has('status')) {
                 $query->where('status', $request->input('status'));
             }
+            if ($request->has('ownerid')) {
+                $query->where('owner_id', $request->input('ownerid'));
+            }
 
             return $query->get();
         }catch (\Exception $e){
