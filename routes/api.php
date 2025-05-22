@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PropertiesController;
 use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,3 +12,4 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource("properties", PropertiesController::class);
 Route::apiResource("transactions", TransactionsController::class);
+Route::apiResource('reviews', ReviewController::class);
