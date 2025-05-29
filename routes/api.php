@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\PropertiesController;
 use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\AuthController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -11,3 +14,6 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource("properties", PropertiesController::class);
 Route::apiResource("transactions", TransactionsController::class);
+
+Route::post('/register', [AuthController::class ,'register']);
+Route::post('/login', [AuthController::class ,'login']);
