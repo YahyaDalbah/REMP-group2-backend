@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource("properties", PropertiesController::class);
+Route::apiResource("properties", PropertiesController::class)->middleware('auth:sanctum');
 Route::apiResource("transactions", TransactionsController::class);
 Route::post('/register', [AuthController::class ,'register']);
 Route::post('/login', [AuthController::class ,'login']);

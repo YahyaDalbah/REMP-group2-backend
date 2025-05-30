@@ -4,27 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 class PropertiesController extends Controller
 {
     public function index(Request $request)
     {
-        try{
-            $request->validate([
-            'status' => 'nullable|in:available,rented,sold'
-            ]);
-            $query = Property::query();
+        $request->validate([
+        'status' => 'nullable|in:available,rented,sold'
+        ]);
+        $query = Property::query();
 
-            if ($request->has('status')) {
-                $query->where('status', $request->input('status'));
-            }
-            if ($request->has('ownerid')) {
-                $query->where('owner_id', $request->input('ownerid'));
-            }
-
-            return $query->get();
-        }catch (\Exception $e){
-            return response()->json(['message' => $e->getMessage()],400);
+        if ($request->has('status')) {
+            $query->where('status', $request->input('status'));
         }
+        if ($request->has('ownerid')) {
+            $query->where('owner_id', $request->input('ownerid'));
+        }
+
+        return $query->get();
+        
     }
     public function store(Request $request){
         $fields = $request->validate([
