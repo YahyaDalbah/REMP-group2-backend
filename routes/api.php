@@ -11,3 +11,9 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource("properties", PropertiesController::class);
 Route::apiResource("transactions", TransactionsController::class);
+use App\Http\Controllers\ReportController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/reports/overview', [ReportController::class, 'overview']);
+    Route::get('/reports/monthly', [ReportController::class, 'monthly']);
+});
