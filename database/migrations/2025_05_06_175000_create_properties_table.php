@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('owner_id')->constrained('users');
             $table->string('title');
             $table->string('image');
+            $table->json('images');
             $table->string('location');
             $table->text('description');
             $table->integer('bedrooms');

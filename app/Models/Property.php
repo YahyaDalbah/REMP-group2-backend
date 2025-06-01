@@ -14,6 +14,7 @@ class Property extends Model
         'owner_id',
         'title',
         'image',
+        'images',
         'location',
         'description',
         'bedrooms',
@@ -24,7 +25,12 @@ class Property extends Model
         'status',
     ];
 
-    // Relationships
+    protected $casts = [
+        'isForRent' => 'boolean',
+        'isForSale' => 'boolean',
+        'images' => 'array'
+    ];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');

@@ -4,10 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 class PropertiesController extends Controller
 {
-    public function index(){
-        return Property::all();
+    public function index(Request $request)
+    {
+        $request->validate([
+        'status' => 'nullable|in:available,rented,sold'
+        ]);
+        $query = Property::query();
+
+        if ($request->has('status')) {
+            $query->where('status', $request->input('status'));
+        }
+        if ($request->has('ownerid')) {
+            $query->where('owner_id', $request->input('ownerid'));
+        }
+
+        return $query->get();
+        
     }
     public function store(Request $request){
         $fields = $request->validate([
@@ -18,6 +33,7 @@ class PropertiesController extends Controller
             'price' => 'required|numeric|min:0',
             'location' => 'required|string',
             'image' => 'required|string',
+            'images' => 'required|array',
             'owner_id' => 'required|exists:users,id',
             'isForRent' => 'required|boolean',
             'isForSale' => 'required|boolean',
@@ -42,6 +58,7 @@ class PropertiesController extends Controller
             'price' => 'required|numeric|min:0',
             'location' => 'required|string',
             'image' => 'required|string',
+            'images' => 'required|array',
             'owner_id' => 'required|exists:users,id',
             'isForRent' => 'required|boolean',
             'isForSale' => 'required|boolean',

@@ -2,18 +2,23 @@
 
 use App\Http\Controllers\PropertiesController;
 use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource("properties", PropertiesController::class);
-Route::apiResource("transactions", TransactionsController::class);
-use App\Http\Controllers\ReportController;
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/overview', [ReportController::class, 'overview']);
     Route::get('/reports/monthly', [ReportController::class, 'monthly']);
 });
+Route::apiResource("properties", PropertiesController::class)->middleware('auth:sanctum');
+Route::apiResource("transactions", TransactionsController::class);
+Route::post('/register', [AuthController::class ,'register']);
+Route::post('/login', [AuthController::class ,'login']);
+Route::apiResource('reviews', ReviewController::class);
