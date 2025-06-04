@@ -5,26 +5,31 @@ namespace App\Http\Controllers;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class PropertiesController extends Controller
 {
     public function index(Request $request)
     {
         $request->validate([
-        'status' => 'nullable|in:available,rented,sold'
+            'status' => 'nullable|in:available,rented,sold'
         ]);
+        
         $query = Property::query();
 
         if ($request->has('status')) {
             $query->where('status', $request->input('status'));
         }
-        if ($request->has('ownerid')) {
-            $query->where('owner_id', $request->input('ownerid'));
+        
+        //only show current user's properties when using "mine" filter
+        if ($request->has('mine')) {
+            $query->where('owner_id', Auth::id());
         }
 
         return $query->get();
-        
     }
-    public function store(Request $request){
+
+    public function store(Request $request)
+    {
         $fields = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -34,22 +39,33 @@ class PropertiesController extends Controller
             'location' => 'required|string',
             'image' => 'required|string',
             'images' => 'required|array',
-            'owner_id' => 'required|exists:users,id',
             'isForRent' => 'required|boolean',
             'isForSale' => 'required|boolean',
             "status" => "required|string"
         ]);
+
+        if(Auth::id() == null){
+            return response()->json("unauthorized action", 403);
+        }
+        $fields['owner_id'] = Auth::id();
 
         $property = Property::create($fields);
-        return $property;
+        return response()->json($property, 201);
     }
-    public function show($id){
-        
+
+    public function show($id)
+    {
+        return Property::findOrFail($id);
+    }
+
+    public function update(Request $request, $id)
+    {
         $property = Property::findOrFail($id);
-        return $property;
         
-    }
-    public function update(Request $request, $id){
+        if ($property->owner_id !== Auth::id()) {
+            abort(403, 'Unauthorized action');
+        }
+
         $fields = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -59,21 +75,24 @@ class PropertiesController extends Controller
             'location' => 'required|string',
             'image' => 'required|string',
             'images' => 'required|array',
-            'owner_id' => 'required|exists:users,id',
             'isForRent' => 'required|boolean',
             'isForSale' => 'required|boolean',
             "status" => "required|string"
         ]);
-
-        $property = Property::findOrFail($id);
 
         $property->update($fields);
         return $property;
     }
-    public function destroy($id){
+
+    public function destroy($id)
+    {
         $property = Property::findOrFail($id);
+        
+        if ($property->owner_id !== Auth::id()) {
+            abort(403, 'Unauthorized action');
+        }
+
         $property->delete();
-        return ['message' => 'property deleted', 'data' => $property];
+        return response()->json(['message' => 'Property deleted']);
     }
-    
 }
