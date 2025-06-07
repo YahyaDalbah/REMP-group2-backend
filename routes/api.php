@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::apiResource("properties", PropertiesController::class)->middleware('auth:sanctum');
 Route::post('/properties/upload-images', [PropertiesController::class, 'uploadImages']);
-Route::apiResource("transactions", TransactionsController::class);
+Route::apiResource("transactions", TransactionsController::class)->middleware('auth:sanctum');
 Route::post('/register', [AuthController::class ,'register']);
 Route::post('/login', [AuthController::class ,'login']);
 Route::apiResource('reviews', ReviewController::class);

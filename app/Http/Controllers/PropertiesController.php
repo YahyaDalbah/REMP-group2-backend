@@ -64,9 +64,6 @@ class PropertiesController extends Controller
     {
         $property = Property::findOrFail($id);
         
-        if ($property->owner_id !== Auth::id()) {
-            abort(403, 'Unauthorized action');
-        }
 
         $fields = $request->validate([
             'title' => 'required|string|max:255',
