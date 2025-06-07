@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class PropertiesController extends Controller
 {
@@ -94,5 +96,27 @@ class PropertiesController extends Controller
 
         $property->delete();
         return response()->json(['message' => 'Property deleted']);
+    }
+    public function uploadImages (Request $request) {
+        $request->validate([
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120'
+        ]);
+
+        $urls = [];
+        
+        if ($request->hasfile('images')) {
+            foreach ($request->file('images') as $file) {
+                try {
+                    $path = $file->store('properties', 'public');
+                    $url = Storage::disk('public')->url($path);
+                    $urls[] = asset($url);
+                } catch (\Exception $e) {
+                    Log::error("Image upload failed: " . $e->getMessage());
+                    continue;
+                }
+            }
+        }
+
+        return response()->json(['urls' => $urls]);
     }
 }
