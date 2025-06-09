@@ -17,12 +17,12 @@ class ReportController extends Controller
     {
         $user = $request->user();
 
-        if ($user->role === 'admin') {
+        if ($user->type === 'admin') {
             $properties = Property::count();
             $views = Property::sum('views');
             $inquiries = Inquiry::count();
             $sales = Sale::count();
-        } else if (in_array($user->role, ['seller', 'agent'])) {
+        } else if (in_array($user->type, ['seller', 'agent'])) {
             $properties = Property::where('user_id', $user->id)->count();
             $views = Property::where('user_id', $user->id)->sum('views');
             $inquiries = Inquiry::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
@@ -30,10 +30,10 @@ class ReportController extends Controller
         } else {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json([
-            'properties' => $properties,
+        //return response()->json([
+          //  'properties' => $properties,
             
-        ]);
+        //]);
        return response()->json(compact('properties', 'views', 'inquiries', 'sales'));
     }
 
@@ -47,7 +47,7 @@ class ReportController extends Controller
         $inquiryQuery = Inquiry::whereBetween('created_at', [$start, $end]);
         $saleQuery = Sale::whereBetween('created_at', [$start, $end]);
 
-        if (in_array($user->role, ['seller', 'agent'])) {
+        if (in_array($user->type, ['seller', 'agent'])) {
             $propertyQuery->where('user_id', $user->id);
             $inquiryQuery->whereHas('property', fn($q) => $q->where('user_id', $user->id));
             $saleQuery->whereHas('property', fn($q) => $q->where('user_id', $user->id));
