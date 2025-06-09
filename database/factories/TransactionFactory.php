@@ -17,15 +17,15 @@ class TransactionFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
-    {
-        return [
-            'property_id' => Property::factory(),
-            'buyer_id' => User::factory(),
-            'transaction_type' => $this->faker->randomElement(['sale', 'rent']),
-            'amount' => $this->faker->randomFloat(2, 1000, 100000),
-            'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'end_date' => $this->faker->dateTimeBetween('now', '+1 year'),
-        ];
-    }
+   public function definition()
+{
+    return [
+        'transaction_type' => $this->faker->randomElement(['sale', 'rent']),
+        'amount' => $this->faker->randomFloat(2, 1000, 100000),
+        'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+        'end_date' => $this->faker->dateTimeBetween('now', '+1 year'),
+        'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
+    ];
+}
+
 }
