@@ -22,16 +22,19 @@ class ReportController extends Controller
             $views = Property::sum('views');
             $inquiries = Inquiry::count();
             $sales = Sale::count();
-        } elseif (in_array($user->role, ['seller', 'agent'])) {
+        } else if (in_array($user->role, ['seller', 'agent'])) {
             $properties = Property::where('user_id', $user->id)->count();
             $views = Property::where('user_id', $user->id)->sum('views');
             $inquiries = Inquiry::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
-            $sales = Sale::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
+          $sales = Sale::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
         } else {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
-        return response()->json(compact('properties', 'views', 'inquiries', 'sales'));
+        return response()->json([
+            'properties' => $properties,
+            
+        ]);
+       return response()->json(compact('properties', 'views', 'inquiries', 'sales'));
     }
 
     public function monthly(Request $request)
