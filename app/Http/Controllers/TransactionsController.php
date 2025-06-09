@@ -38,5 +38,17 @@ class TransactionsController extends Controller
         $transaction = Transaction::findOrFail($id);
         return $transaction;
         
-    }    
+    }   
+    public function update(Request $request, $id)
+{
+    $transaction = Transaction::findOrFail($id);
+
+    $fields = $request->validate([
+        'status' => 'required|in:pending,completed,cancelled'
+    ]);
+
+    $transaction->update($fields);
+
+    return response()->json($transaction);
+} 
 }
