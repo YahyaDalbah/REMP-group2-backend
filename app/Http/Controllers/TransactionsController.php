@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; 
 class TransactionsController extends Controller
 {
     public function index(Request $request){
@@ -18,7 +18,7 @@ class TransactionsController extends Controller
         if ($request->has('type')) {
             $query->where('transaction_type', $request->input('type'));
         }
-        return $query->get();
+        return response()->json($query->get());
     }
     public function store(Request $request){
         $fields = $request->validate([

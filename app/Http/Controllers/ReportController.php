@@ -17,12 +17,12 @@ class ReportController extends Controller
     {
         $user = $request->user();
 
-        if ($user->role === 'admin') {
+        if ($user->type === 'admin') {
             $properties = Property::count();
             $views = Property::sum('views');
             $inquiries = Inquiry::count();
             $sales = Sale::count();
-        } elseif (in_array($user->role, ['seller', 'agent'])) {
+        } elseif (in_array($user->type, ['seller', 'agent'])) {
             $properties = Property::where('user_id', $user->id)->count();
             $views = Property::where('user_id', $user->id)->sum('views');
             $inquiries = Inquiry::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();

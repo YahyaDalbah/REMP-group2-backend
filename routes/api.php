@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/overview', [ReportController::class, 'overview']);
     Route::get('/reports/monthly', [ReportController::class, 'monthly']);
 });
+
 Route::apiResource("properties", PropertiesController::class)->middleware('auth:sanctum');
 Route::post('/properties/upload-images', [PropertiesController::class, 'uploadImages']);
 Route::apiResource("transactions", TransactionsController::class)->middleware('auth:sanctum');
