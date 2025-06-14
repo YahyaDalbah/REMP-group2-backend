@@ -14,8 +14,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/reports/overview', [ReportController::class, 'overview']);
+    
     Route::get('/reports/monthly', [ReportController::class, 'monthly']);
+    Route::get('/reports/properties/new', [ReportController::class, 'newProperties']);
+    Route::get('/reports/overview', [ReportController::class, 'overview']);
+    
+
+    
+
 });
 Route::apiResource("properties", PropertiesController::class)->middleware('auth:sanctum');
 Route::post('/properties/upload-images', [PropertiesController::class, 'uploadImages']);
@@ -23,3 +29,4 @@ Route::apiResource("transactions", TransactionsController::class)->middleware('a
 Route::post('/register', [AuthController::class ,'register']);
 Route::post('/login', [AuthController::class ,'login']);
 Route::apiResource('reviews', ReviewController::class);
+

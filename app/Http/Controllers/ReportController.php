@@ -30,10 +30,7 @@ class ReportController extends Controller
         } else {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        //return response()->json([
-          //  'properties' => $properties,
-            
-        //]);
+        
        return response()->json(compact('properties', 'views', 'inquiries', 'sales'));
     }
 
@@ -59,4 +56,41 @@ class ReportController extends Controller
             'sales' => $saleQuery->count(),
         ]);
     }
+    public function newProperties()
+{
+    $user = auth()->user();
+
+    $query = Property::whereBetween('created_at', [now()->startOfMonth(), now()]);
+
+    if (in_array($user->type, ['seller', 'agent'])) {
+        $query->where('user_id', $user->id);
+    }
+
+    $properties = $query->get(['id', 'title', 'price', 'created_at']);
+    return response()->json($properties);
+}
+public function transactions()
+{
+    $user = auth()->user();
+
+    $salesQuery = Sale::query();
+
+    
+    if (in_array($user->type, ['seller', 'agent'])) {
+        $salesQuery->whereHas('property', fn($q) => $q->where('user_id', $user->id));
+    }
+
+    
+    $completed = (clone $salesQuery)->where('status', 'completed')->count();
+    $pending   = (clone $salesQuery)->where('status', 'pending')->count();
+    $canceled  = (clone $salesQuery)->where('status', 'canceled')->count();
+
+    return response()->json([
+        'completed' => $completed,
+        'pending' => $pending,
+        'canceled' => $canceled
+    ]);
+}
+
+
 }
