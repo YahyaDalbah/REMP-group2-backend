@@ -7,6 +7,7 @@ use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Users;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,3 +24,8 @@ Route::apiResource("transactions", TransactionsController::class)->middleware('a
 Route::post('/register', [AuthController::class ,'register']);
 Route::post('/login', [AuthController::class ,'login']);
 Route::apiResource('reviews', ReviewController::class);
+
+use App\Http\Controllers\UsersController;
+Route::apiResource('users', Users::class);
+Route::get('/users/restore/{id}', [Users::class, 'restore'])->name('users.restore');
+Route::get('/users/force-delete/{id}', [Users::class, 'forceDelete'])->name('users.forceDelete');
