@@ -18,11 +18,13 @@ class UsersTableSeeder extends Seeder
         User::factory(3)->create(["type" => "buyer"]);
         
         // Create admin user
-        User::create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('admin'),
-            'type'=> 'admin',
-        ]);
+      User::create([
+    'name' => 'admin',
+    'email' => 'admin@admin.com',
+    'password' => Hash::make('admin'),
+    'role'=> 'admin',   
+]);
+
+  
     }
 }

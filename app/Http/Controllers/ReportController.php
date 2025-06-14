@@ -17,21 +17,21 @@ class ReportController extends Controller
     {
         $user = $request->user();
 
-        if ($user->role === 'admin') {
+        if ($user->type === 'admin') {
             $properties = Property::count();
             $views = Property::sum('views');
             $inquiries = Inquiry::count();
             $sales = Sale::count();
-        } elseif (in_array($user->role, ['seller', 'agent'])) {
+        } else if (in_array($user->type, ['seller', 'agent'])) {
             $properties = Property::where('user_id', $user->id)->count();
             $views = Property::where('user_id', $user->id)->sum('views');
             $inquiries = Inquiry::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
-            $sales = Sale::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
+          $sales = Sale::whereHas('property', fn($q) => $q->where('user_id', $user->id))->count();
         } else {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
-        return response()->json(compact('properties', 'views', 'inquiries', 'sales'));
+        
+       return response()->json(compact('properties', 'views', 'inquiries', 'sales'));
     }
 
     public function monthly(Request $request)
@@ -44,7 +44,7 @@ class ReportController extends Controller
         $inquiryQuery = Inquiry::whereBetween('created_at', [$start, $end]);
         $saleQuery = Sale::whereBetween('created_at', [$start, $end]);
 
-        if (in_array($user->role, ['seller', 'agent'])) {
+        if (in_array($user->type, ['seller', 'agent'])) {
             $propertyQuery->where('user_id', $user->id);
             $inquiryQuery->whereHas('property', fn($q) => $q->where('user_id', $user->id));
             $saleQuery->whereHas('property', fn($q) => $q->where('user_id', $user->id));
@@ -56,4 +56,41 @@ class ReportController extends Controller
             'sales' => $saleQuery->count(),
         ]);
     }
+    public function newProperties()
+{
+    $user = auth()->user();
+
+    $query = Property::whereBetween('created_at', [now()->startOfMonth(), now()]);
+
+    if (in_array($user->type, ['seller', 'agent'])) {
+        $query->where('user_id', $user->id);
+    }
+
+    $properties = $query->get(['id', 'title', 'price', 'created_at']);
+    return response()->json($properties);
+}
+public function transactions()
+{
+    $user = auth()->user();
+
+    $salesQuery = Sale::query();
+
+    
+    if (in_array($user->type, ['seller', 'agent'])) {
+        $salesQuery->whereHas('property', fn($q) => $q->where('user_id', $user->id));
+    }
+
+    
+    $completed = (clone $salesQuery)->where('status', 'completed')->count();
+    $pending   = (clone $salesQuery)->where('status', 'pending')->count();
+    $canceled  = (clone $salesQuery)->where('status', 'canceled')->count();
+
+    return response()->json([
+        'completed' => $completed,
+        'pending' => $pending,
+        'canceled' => $canceled
+    ]);
+}
+
+
 }

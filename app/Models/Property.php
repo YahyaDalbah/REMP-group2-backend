@@ -45,4 +45,13 @@ class Property extends Model
     {
         return $this->hasMany(Review::class);
     }
+
+public function inquiries() {
+    return $this->hasMany(Inquiry::class);
+}
+
+public function sales() {
+    return $this->hasMany(Sale::class);
+}
+
 }
