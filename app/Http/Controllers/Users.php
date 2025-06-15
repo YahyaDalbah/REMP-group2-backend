@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Hash;
 
 class Users extends Controller
 {
-    /**
-     * Display a listing of the users.
-     */
     public function index()
     {
         $users = User::withTrashed()->get(); 
