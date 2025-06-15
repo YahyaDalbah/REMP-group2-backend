@@ -19,7 +19,6 @@ return new class extends Migration
         $table->decimal('amount', 15, 2);
         $table->date('start_date')->nullable();
         $table->date('end_date')->nullable();
-        $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
         $table->timestamps();
         $table->softDeletes();
     });
