@@ -17,6 +17,7 @@ class Transaction extends Model
         'amount',
         'start_date',
         'end_date',
+        
     ];
 
     // Relationships

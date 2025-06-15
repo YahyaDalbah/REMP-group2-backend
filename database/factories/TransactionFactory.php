@@ -17,10 +17,10 @@ class TransactionFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
-    {
-        return [
-            'property_id' => Property::factory(),
+   public function definition()
+{
+    return [
+          'property_id' => Property::factory(),
             'buyer_id' => User::factory(),
             'transaction_type' => $this->faker->randomElement(['sale', 'rent']),
             'amount' => $this->faker->randomFloat(2, 1000, 100000),
